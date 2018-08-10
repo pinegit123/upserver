@@ -262,8 +262,8 @@ public class HandlerServiceImpl implements HandlerService {
 				JSONArray photoArr = jsonObject.getJSONArray("tpxx");
 				
 				JiryInfo jiryInfo=mapper.convertValue(ryInfo, JiryInfo.class);
-			//	String result=jiryService.saveJiry(jiryInfo);
-				logger.info("==========="+1+"=================\r\n");
+				String result=jiryService.saveJiry(jiryInfo);
+				logger.info("========国内旅客上传结果：==="+result+"=================\r\n");
 				boolean b=false;
 				String[] imgPaths=new String[2];
 				String base64str="";
