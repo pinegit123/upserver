@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.csl.ws.hotel"></context:component-scan>
+	<context:property-placeholder location="classpath:db.properties"/>
+  
+  <import resource="classpath*:META-INF/cxf/cxf.xml" />
+  <import resource="classpath*:META-INF/cxf/cxf-extension-soap.xml" />
+  <import resource="classpath*:META-INF/cxf/cxf-servlet.xml" />
+ <!--  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml" /> -->
+ <!--  <import resource="classpath:service-context.xml" /> -->
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>${jdbc.driverClass}</value>
+		</property>
+		<property name="url">
+			<value>${jdbc.url}</value>
+		</property>
+		<property name="username">
+			<value>${jdbc.user}</value>
+		</property>
+		<property name="password">
+			<value>${jdbc.password}</value>
+		</property>
+	</bean>
+	
+	<!-- 配置sessionFactory -->
+	<bean id="sf" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="configLocation" value="classpath:sqlMapConfig.xml"></property>
+		<!-- mapper config --> 
+		<property name="mapperLocations">
+			<array>
+				<value>classpath:com/csl/ws/hotel/po/JwryInfo.xml</value>
+				<value>classpath:com/csl/ws/hotel/po/JiryInfo.xml</value>
+				<value>classpath:com/csl/ws/hotel/po/AuthInfo.xml</value>
+				<value>classpath:com/csl/ws/hotel/po/PhotoInfo.xml</value>
+				<value>classpath:com/csl/ws/hotel/po/Hotel.xml</value>
+				<value>classpath:com/csl/ws/hotel/po/RecInfo.xml</value>
+			</array>
+		</property>
+	</bean>
+	 <!-- 
+	 <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		 <property name="basePackage" value="com.csl.hotel.mapper"></property>
+	 </bean>
+	  -->
+	 <!-- dao config -->
+	<bean id="jiryDao" class="com.csl.ws.hotel.dao.JiryDaoImpl">
+		<property name="sqlSessionFactory" ref="sf"/>
+	</bean>
+	 <!-- --> 
+	<bean id="jwryDao" class="com.csl.ws.hotel.dao.JwryDaoImpl">
+		<property name="sqlSessionFactory" ref="sf"/>
+	</bean>
+	
+	<bean id="hotelDao" class="com.csl.ws.hotel.dao.HotelDaoImpl">
+		<property name="sqlSessionFactory" ref="sf"/>
+	</bean>
+	
+	<bean id="authDao" class="com.csl.ws.hotel.dao.AuthDaoImpl">
+		<property name="sqlSessionFactory" ref="sf"/>
+	</bean>
+	 
+	<bean id="photoDao" class="com.csl.ws.hotel.dao.PhotoDaoImpl">
+		<property name="sqlSessionFactory" ref="sf"/>
+	</bean>
+	<!--service config-->
+	<bean id="jiryService" class="com.csl.ws.hotel.service.JiryServiceImpl">
+		<property name="jiryDao" ref="jiryDao"/>
+	</bean>
+	<bean id="hotelService" class="com.csl.ws.hotel.service.HotelServiceImpl">
+		<property name="hotelDao" ref="hotelDao"/>
+	</bean>
+	<bean id="authService" class="com.csl.ws.hotel.service.AuthServiceImpl">
+		<property name="authDao" ref="authDao"/>
+	</bean>
+	<bean id="jwryService" class="com.csl.ws.hotel.service.JwryServiceImpl">
+		<property name="jwryDao" ref="jwryDao"/>
+	</bean>
+	 <bean id="photoService" class="com.csl.ws.hotel.service.PhotoServiceImpl">
+		<property name="photoDao" ref="photoDao"/>
+	</bean>
+	<bean id="handlerService" class="com.csl.ws.hotel.service.HandlerServiceImpl">
+		<property name="jiryService" ref="jiryService"/>
+		<property name="jwryService" ref="jwryService"/>
+		<property name="photoService" ref="photoService"/>
+	</bean>
+	<bean id="gnUpService" class="com.csl.ws.sei.GnUpServerImpl">
+		<property name="handlerService" ref="handlerService"></property>
+	</bean>
+	<bean id="jwupService" class="com.csl.ws.sei.JwUpServerImpl">
+		<property name="handlerService" ref="handlerService"/>
+	</bean>
+	<!-- ==========================事务相关配置======================================== -->
+	<!-- 1.配置jdbc的事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 2.配置事务通知及属性 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="delete*" propagation="REQUIRED"/>
+			<tx:method name="insert*" propagation="REQUIRED"/>
+			<tx:method name="save*" propagation="REQUIRED"/>
+			<tx:method name="update*" propagation="REQUIRED"/>
+			<tx:method name="find*" propagation="REQUIRED"/>
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="select*" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 3.配置事务切入点,再把事务通知和事务切入点关联起来 -->
+	<aop:config>
+		<aop:pointcut expression="execution(* com.csl.ws.hotel.service.*.*(..))" id="txPointCut"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut"/>
+	</aop:config>
+</beans>
