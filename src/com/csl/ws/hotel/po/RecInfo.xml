@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csl.ws.hotel.po.RecInfo" >
+	
+	<resultMap type="RecInfo" id="recMap">
+		<id column="ID" property="id"/>
+		<result column="XM" property="xm" jdbcType="VARCHAR"/>
+		<result column="XBCODE" property="sex" jdbcType="VARCHAR"/>
+		<result column="MZ" property="mz" jdbcType="VARCHAR"/>
+		<result column="CSRQ" property="csrq" jdbcType="DATE"/>
+		<result column="ZJZLCODE" property="zjzl"/>
+		<result column="ZJHM" property="zjhm"/>
+		<result column="XZQH" property="xzqh"/>
+		<result column="XXDZ" property="xxdz"/>
+		<result column="RZSJ" property="rzsj" jdbcType="DATE"/>
+		<result column="TSSJ" property="tssj" jdbcType="DATE"/>
+		<result column="FJHM" property="fjhm"/>
+		<result column="RKSJ" property="rksj" jdbcType="DATE"/>
+		<result column="HOTELID" property="hotelId"/>
+		<result column="PCS" property="pcs"/>
+	</resultMap>
+	
+	<sql id="RecColumn">ID,XM,XBCODE,MZ,CSRQ,ZJZLCODE,ZJHM,XZQH,XXDZ,RZSJ,FJHM,HOTELID,TSSJ,RKSJ,PCS</sql>
+	
+	<!-- 根据id查询 返回ResultMap类型jwryMap
+	<select id="selectJwryById" parameterType="string" resultMap="jwryMap" >
+		select <include refid="jwryColumn"/> from T_JW_PRE where id=#{id}
+	</select>
+	-->
+	<!-- 插入数据 -->
+	<insert id="insertRecInfo" parameterType="RecInfo" >
+		insert into T_GN_REC(<include refid="RecColumn"/>) values
+		(#{id},#{xm},#{sex},#{mz},TO_DATE(#{csrq},'yyyyMMdd'),#{zjzl},
+		  #{zjhm},#{xzqh},#{xxdz},TO_DATE(#{rzsj},'yyyymmddhh24mi'),#{fjhm},#{hotelId},
+		  TO_DATE(#{tssj},'yyyymmddhh24mi'),
+		  SYSDATE
+		  <if test="pcs!=null">
+		  	,#{pcs}
+		  </if>
+		)
+	</insert>
+	
+	<!-- 插入数据 参数为Map
+	<insert id="insertUser4Map" parameterType="hashmap" >
+		insert into tb_user(id,name,address) values(#{id},#{name},#{address})
+	</insert>
+	-->
+	
+	
+</mapper>

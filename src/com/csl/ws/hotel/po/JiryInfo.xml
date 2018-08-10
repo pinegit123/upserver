@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csl.ws.hotel.po.Jiry" >
+	
+	<resultMap type="JiryInfo" id="jiryMap">
+		<id column="ID" property="id"/>
+		<result column="XM" property="name" jdbcType="VARCHAR"/>
+		<result column="XBCODE" property="sex" jdbcType="VARCHAR"/>
+		<result column="MZ" property="nation" jdbcType="VARCHAR"/>
+		<result column="CSRQ" property="bdate" jdbcType="DATE"/>
+		<result column="ZJZLCODE" property="zjzl"/>
+		<result column="ZJHM" property="zjhm"/>
+		<result column="XZQH" property="xzqh"/>
+		<result column="XXDZ" property="address"/>
+		<result column="RZSJ" property="inTime" jdbcType="DATE"/>
+		<result column="FJHM" property="noRoom"/>
+		<!-- <result column="DJSJ" property="traTime" jdbcType="DATE"/> -->
+		<result column="RKSJ" property="rksj" jdbcType="DATE"/>
+		<result column="HOTELID" property="hotelId"/>
+		<result column="PCS" property="pcs"/>
+		
+		<association property="authInfo" javaType="AuthInfo">
+			<id column="HOTELID" property="hotelId"/>
+			<result column="AUTH_CODE" property="authCode"/>
+			<result column="AUTH_TIME" property="authTime"/>
+			<result column="AUTH_STATUS" property="authStatus"/>
+		</association>
+		
+		<association property="photoInfo" javaType="PhotoInfo">
+			<id column="ID" property="ryid"/>
+			<result column="ZP" property="photo" jdbcType="BLOB"/>
+			<result column="URL" property="photoUrl"/>
+			<result column="FLAG" property="flag" jdbcType="INTEGER"/>
+		</association>
+	</resultMap>
+	
+	<sql id="jiryColumn">
+		ID,XM,XBCODE,MZ,CSRQ,ZJZLCODE,ZJHM,XZQH,XXDZ,RZSJ,FJHM,RKSJ,HOTELID,PCS
+	</sql>
+	<sql id="jiryOutColumn">
+		ID,XM,XBCODE,MZ,CSRQ,ZJZLCODE,ZJHM,XZQH,XXDZ,RZSJ,FJHM,RKSJ,HOTELID,TSSJ,PCS
+	</sql>
+	
+	<!-- 根据id查询 返回ResultMap类型jwryMap-->
+	<select id="selectJiryById" parameterType="string" resultMap="jiryMap" >
+		select <include refid="jiryColumn"/> from T_GN_PRE where id=#{id}
+	</select>
+	
+	<!-- 插入入住数据 -->
+	<insert id="insertJiry" parameterType="JiryInfo">
+		insert into T_GN_PRE(<include refid="jiryColumn"/>) values
+		(
+		  #{id},#{name},#{sex},#{nation}, TO_DATE(#{bdate},'yyyy-MM-dd'),#{zjzl},
+		  #{zjhm},#{xzqh},#{address},
+		  TO_DATE(#{inTime},'yyyymmddhh24mi'),
+		  #{noRoom},
+		  SYSDATE,
+		  #{hotelId}
+		  <if test="pcs!=null">
+		  	,#{pcs}
+		  </if>
+		)
+	</insert>
+	<delete id="deleteJiryById" parameterType="string">
+		DELETE FROM T_GN_PRE p WHERE p.id=#{ryId}
+	</delete>
+</mapper>

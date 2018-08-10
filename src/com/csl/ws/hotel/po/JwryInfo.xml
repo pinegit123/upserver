@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csl.ws.hotel.po.Jwry" >
+	
+	<resultMap type="JwryInfo" id="jwryMap">
+		<id column="ID" property="id"/>
+		<result column="YWX" property="ywx"/>
+		<result column="YWM" property="ywm" />
+		<result column="ZWXM" property="zwxm" />
+		<result column="XBCODE" property="sex"/>
+		<result column="CSRQ" property="csrq" jdbcType="DATE"/>
+		<result column="GJDQ" property="gjdq"/>
+		<result column="ZJZL" property="zjzl"/>
+		<result column="ZJHM" property="zjhm"/>
+		<result column="QZZL" property="qzzl"/>
+		<result column="QZHM" property="qzhm"/>
+		<result column="TLYXQZ" property="tlyxqz" jdbcType="DATE"/>
+		<result column="QFD" property="qfd"/>
+		<result column="RJRQ" property="rjrq" jdbcType="DATE"/>
+		<result column="RJKA" property="rjka"/>
+		<result column="RZSJ" property="rzsj" jdbcType="DATE"/>
+		<result column="TSSJ" property="tssj" jdbcType="DATE"/>
+		<result column="FH" property="fjhm"/>
+		<result column="LYD" property="lyd"/>
+		<result column="QWD" property="qwd"/>
+		<result column="TLSY" property="tlsy"/>
+		<result column="HOTELID" property="hotelId"/>
+		<result column="PCS" property="pcs"/>
+		<result column="RKSJ" property="rksj" jdbcType="DATE"/>
+	</resultMap>
+	
+	<sql id="jwryColumn">
+		ID,YWX,YWM,ZWXM,XBCODE,CSRQ,GJDQ,ZJZL,ZJHM,QZZL,QZHM,QFD,TLYXQZ,
+		RJRQ,RJKA,RZSJ,FH,LYD,QWD,TLSY,HOTELID
+	</sql>
+	<sql id="jwryOutColumn">
+		ID,YWX,YWM,ZWXM,XBCODE,CSRQ,GJDQ,ZJZL,ZJHM,QZZL,QZHM,QFD,TLYXQZ,
+		RJRQ,RJKA,RZSJ,TSSJ,FH,LYD,QWD,TLSY,HOTELID
+	</sql>
+	<!-- 根据id查询 返回ResultMap类型jwryMap-->
+	<select id="selectJwryById" parameterType="string" resultMap="jwryMap" >
+		select <include refid="jwryColumn"/> from T_JW_PRE where id=#{id}
+	</select>
+	
+	<!-- 插入退宿数据 TO_DATE(#{tssj},'yyyymmddhh24mi')-->
+	<insert id="insertJwryOut" parameterType="JwryInfo">
+		insert into T_JW_REC(<include refid="jwryOutColumn"/>)values
+		(
+		  #{id},#{ywx},#{ywm},#{zwxm},#{sex},TO_DATE(#{csrq},'yyyyMMdd'),#{gjdq},
+		  #{zjzl},#{zjhm},#{qzzl},#{qzhm},#{qfd},TO_DATE(#{tlyxqz},'yyyyMMdd'),
+		  TO_DATE(#{rjrq},'yyyyMMdd'),#{rjka},TO_DATE(#{rzsj},'yyyymmddhh24mi'),
+		  TO_DATE(#{tssj},'yyyymmddhh24mi'),#{fjhm},#{lyd},#{qwd},#{tlsy},#{hotelId}
+		)
+	</insert>
+	
+	<!-- 插入入住数据 TO_DATE(#{rzsj},'yyyymmddhh24mi')-->
+	<insert id="insertJwry" parameterType="JwryInfo">
+		insert into T_JW_PRE(<include refid="jwryColumn"/>)values
+		(
+		  #{id},#{ywx},#{ywm},#{zwxm},#{sex},TO_DATE(#{csrq},'yyyy-MM-dd'),#{gjdq},
+		  #{zjzl},#{zjhm},#{qzzl},#{qzhm},#{qfd},TO_DATE(#{tlyxqz},'yyyy-MM-dd'),
+		  TO_DATE(#{rjrq},'yyyy-MM-dd'),#{rjka},TO_DATE(#{rzsj},'yyyymmddhh24mi'),#{fjhm},#{lyd},#{qwd},
+		  #{tlsy},#{hotelId}
+		)
+	</insert>
+	
+	<delete id="deleteJwry" parameterType="string">
+		DELETE FROM T_JW_PRE p WHERE p.ID=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,28 @@
+{
+	"ryxx": {
+		"id": "4101026003160530232647",
+		"name": "皮吉万",
+		"sex": "1",
+		"nation": "HA",
+		"bdate": "19780809",
+		"zjzl": "11",
+		"zjhm": "41011971435674489",
+		"xzqh": "410105",
+		"address": "郑州市金水区东风路蓝宝万105",
+		"inTime": "201801072045",
+		"noRoom": "6608",
+		"traTime": "201801072358",
+		"rksj": "201801102258",
+		"hotelId": "4101026003",
+		"pcs": "1501",
+		"transferFlag": 1
+	},
+	"auth": {
+		"authCode": "6e2895b1e3b7fbbefac0f3e1c7021e8f3b1aa312680d94e4715bb9d94bdb623a"
+	},
+	"tpxx": {
+		"ryid":"4101026003160530232647",
+		"zjzp": "zs.jpg",
+		"xczp": "zs_xcz.jpg"
+	}
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csl.ws.hotel.po.AuthInfo" >
+	
+	<resultMap type="AuthInfo" id="authMap">
+		<id column="HOTEL_ID" property="hotelId"/>
+		<result column="AUTH_CODE" property="authCode"/>
+		<result column="AUTH_TIME" property="authDate" jdbcType="VARCHAR"/>
+		<result column="AUTH_STATUS" property="authStatus" jdbcType="INTEGER"/>
+	</resultMap>
+	
+	<sql id="authColumn">
+		HOTEL_ID,AUTH_CODE,AUTH_TIME,AUTH_STATUS
+	</sql>
+	
+	<!-- 插入数据 -->
+	<insert id="insertAuth" parameterType="AuthInfo">
+		insert into T_AUTH(<include refid="authColumn"/>)values
+		(
+		   #{hotelId},#{authCode},#{authDate},#{authStatus}
+		)
+	</insert>
+	<!-- 根据id查询 返回ResultMap类型jwryMap
+	<select id="selectJwryById" parameterType="string" resultMap="jwryMap" >
+		select <include refid="jwryColumn"/> from T_JW_PRE where id=#{id}
+	</select>
+	-->
+	
+	
+</mapper>
